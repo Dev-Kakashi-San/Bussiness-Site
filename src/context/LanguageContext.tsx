@@ -37,6 +37,13 @@ const translations = {
     email: 'Email',
     password: 'Password',
     loggingIn: 'Logging In...',
+    pleaseEnterCredentials: 'Please enter your email and password',
+    loginSuccess: 'Login Successful',
+    welcomeToYourAccount: 'Welcome to your account',
+    loginFailed: 'Login Failed',
+    invalidCredentials: 'Invalid email or password',
+    enterCredentials: 'Enter your credentials to login',
+    serverHandledAuth: 'Authentication is handled securely on our servers',
     
     // Dashboard
     adminDashboard: 'Admin Dashboard',
@@ -77,6 +84,13 @@ const translations = {
     email: 'ईमेल',
     password: 'पासवर्ड',
     loggingIn: 'लॉग इन हो रहा है...',
+    pleaseEnterCredentials: 'कृपया अपना ईमेल और पासवर्ड दर्ज करें',
+    loginSuccess: 'लॉगिन सफल',
+    welcomeToYourAccount: 'आपके खाते में आपका स्वागत है',
+    loginFailed: 'लॉगिन विफल',
+    invalidCredentials: 'अमान्य ईमेल या पासवर्ड',
+    enterCredentials: 'लॉगिन करने के लिए अपना विवरण दर्ज करें',
+    serverHandledAuth: 'प्रमाणीकरण हमारे सर्वर पर सुरक्षित रूप से संभाला जाता है',
     
     // Dashboard
     adminDashboard: 'व्यवस्थापक डैशबोर्ड',

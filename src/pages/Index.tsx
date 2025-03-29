@@ -5,9 +5,11 @@ import { ArrowRight } from 'lucide-react';
 import { mockPartitions } from '@/lib/mockData';
 import PartitionGrid from '@/components/PartitionGrid';
 import Navbar from '@/components/Navbar';
+import { useLanguage } from '@/context/LanguageContext';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { translate } = useLanguage();
   const featuredPartitions = mockPartitions.filter(p => p.status === 'available').slice(0, 3);
 
   return (
@@ -19,12 +21,11 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-black via-transparent to-partition-highlight/20 -z-10" />
         
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in text-gradient">
-          Find Your Perfect Business Space
+          {translate('findYourPerfectSpace')}
         </h1>
         
         <p className="text-lg text-gray-300 max-w-3xl mb-8 animate-fade-in">
-          Browse our collection of premium commercial partitions available for rent.
-          Each space is carefully designed to help your business thrive.
+          {translate('browseCollection')}
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 animate-fade-in">
@@ -33,7 +34,7 @@ const Index = () => {
             className="purple-gradient"
             size="lg"
           >
-            View All Partitions <ArrowRight className="ml-2 h-5 w-5" />
+            {translate('viewAllPartitions')} <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
           <Button 
@@ -42,7 +43,7 @@ const Index = () => {
             size="lg"
             className="border-partition-highlight text-partition-highlight hover:bg-partition-highlight/10"
           >
-            Tenant Login
+            {translate('tenantLogin')}
           </Button>
         </div>
       </section>
@@ -51,13 +52,13 @@ const Index = () => {
       <section className="py-16 px-6 md:px-12 bg-secondary/20">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Partitions</h2>
+            <h2 className="text-3xl font-bold">{translate('featuredPartitions')}</h2>
             <Button 
               variant="link" 
               onClick={() => navigate('/partitions')}
               className="text-partition-highlight"
             >
-              View All <ArrowRight className="ml-1 h-4 w-4" />
+              {translate('viewAll')} <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
 
@@ -68,7 +69,7 @@ const Index = () => {
       {/* Benefits Section */}
       <section className="py-16 px-6 md:px-12 glass-morphism">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Why Choose Our Spaces?</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center">{translate('whyChooseOurSpaces')}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 glass-morphism rounded-lg">
@@ -78,8 +79,8 @@ const Index = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Prime Location</h3>
-              <p className="text-gray-400">Strategically positioned partitions that maximize visibility and customer traffic.</p>
+              <h3 className="text-xl font-semibold mb-2">{translate('primeLocation')}</h3>
+              <p className="text-gray-400">{translate('primeLocationDesc')}</p>
             </div>
             
             <div className="text-center p-6 glass-morphism rounded-lg">
@@ -88,8 +89,8 @@ const Index = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Flexible Terms</h3>
-              <p className="text-gray-400">Rental agreements tailored to your business needs with flexible payment options.</p>
+              <h3 className="text-xl font-semibold mb-2">{translate('flexibleTerms')}</h3>
+              <p className="text-gray-400">{translate('flexibleTermsDesc')}</p>
             </div>
             
             <div className="text-center p-6 glass-morphism rounded-lg">
@@ -98,8 +99,8 @@ const Index = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Modern Amenities</h3>
-              <p className="text-gray-400">All partitions equipped with essential utilities and modern business amenities.</p>
+              <h3 className="text-xl font-semibold mb-2">{translate('modernAmenities')}</h3>
+              <p className="text-gray-400">{translate('modernAmenitiesDesc')}</p>
             </div>
           </div>
         </div>
@@ -108,7 +109,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 px-6 md:px-12 border-t border-white/10 mt-auto">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400">© 2023 Partition Pavilion. All rights reserved.</p>
+          <p className="text-gray-400">{translate('copyright')}</p>
         </div>
       </footer>
     </div>

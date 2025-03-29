@@ -1,12 +1,14 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogOut, Menu, User, X } from 'lucide-react';
+import { LogOut, Menu, Globe, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { language, setLanguage, translate } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -15,23 +17,27 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'hi' : 'en');
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-partition-highlight">PartitionPavilion</span>
+              <span className="text-2xl font-bold text-partition-highlight">Rama Kuti Rentings</span>
             </Link>
           </div>
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-              Home
+              {translate('home')}
             </Link>
             <Link to="/partitions" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-              Partitions
+              {translate('partitions')}
             </Link>
             
             {user ? (
@@ -40,7 +46,7 @@ const Navbar = () => {
                   to="/dashboard" 
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md"
                 >
-                  Dashboard
+                  {translate('dashboard')}
                 </Link>
                 <div className="flex items-center ml-4">
                   <Button 
@@ -59,13 +65,35 @@ const Navbar = () => {
                 onClick={() => navigate('/login')}
                 className="border-partition-highlight text-partition-highlight hover:bg-partition-highlight/10"
               >
-                Login
+                {translate('login')}
               </Button>
             )}
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="ml-2"
+              title={translate('switchLanguage')}
+            >
+              <Globe className="h-5 w-5 text-gray-300" />
+              <span className="ml-1 text-xs font-semibold">{language.toUpperCase()}</span>
+            </Button>
           </div>
 
           {/* Mobile menu button */}
           <div className="flex md:hidden items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="mr-2"
+              title={translate('switchLanguage')}
+            >
+              <Globe className="h-5 w-5 text-gray-300" />
+              <span className="ml-1 text-xs font-semibold">{language.toUpperCase()}</span>
+            </Button>
+            
             <button
               type="button"
               className="text-gray-300 hover:text-white p-2"
@@ -90,14 +118,14 @@ const Navbar = () => {
               className="text-gray-300 hover:text-white block px-3 py-2 rounded-md"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Home
+              {translate('home')}
             </Link>
             <Link
               to="/partitions"
               className="text-gray-300 hover:text-white block px-3 py-2 rounded-md"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Partitions
+              {translate('partitions')}
             </Link>
             {user ? (
               <>
@@ -106,7 +134,7 @@ const Navbar = () => {
                   className="text-gray-300 hover:text-white block px-3 py-2 rounded-md"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  {translate('dashboard')}
                 </Link>
                 <button
                   onClick={() => {
@@ -115,7 +143,7 @@ const Navbar = () => {
                   }}
                   className="text-gray-300 hover:text-white block px-3 py-2 rounded-md w-full text-left"
                 >
-                  Logout
+                  {translate('logout')}
                 </button>
               </>
             ) : (
@@ -124,7 +152,7 @@ const Navbar = () => {
                 className="text-partition-highlight hover:text-white block px-3 py-2 rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Login
+                {translate('login')}
               </Link>
             )}
           </div>

@@ -5,9 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogIn } from 'lucide-react';
+import { LogIn, Smartphone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/LanguageContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { translate } = useLanguage();
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ const LoginForm = () => {
     if (!email || !password) {
       toast({
         title: "Error",
-        description: "Please enter email and password",
+        description: translate('pleaseEnterCredentials'),
         variant: "destructive",
       });
       return;
@@ -35,14 +37,14 @@ const LoginForm = () => {
       await login(email, password);
       navigate('/dashboard');
       toast({
-        title: "Success",
-        description: "Logged in successfully!",
+        title: translate('loginSuccess'),
+        description: translate('welcomeToYourAccount'),
       });
     } catch (error) {
       console.error('Login error:', error);
       toast({
-        title: "Login Failed",
-        description: "Invalid email or password. For demo, use admin@example.com / password or tenant@example.com / password",
+        title: translate('loginFailed'),
+        description: translate('invalidCredentials'),
         variant: "destructive",
       });
     } finally {
@@ -51,11 +53,14 @@ const LoginForm = () => {
   };
 
   return (
-    <Card className="max-w-md w-full mx-auto glass-morphism">
+    <Card className={`${isMobile ? 'w-full' : 'max-w-md w-full mx-auto'} glass-morphism`}>
       <CardHeader>
-        <CardTitle className="text-2xl text-center">Login</CardTitle>
+        <div className="flex items-center justify-center mb-2">
+          <Smartphone className="h-6 w-6 mr-2 text-partition-highlight" />
+          <CardTitle className="text-xl md:text-2xl text-center">{translate('login')}</CardTitle>
+        </div>
         <CardDescription className="text-center">
-          Enter your credentials to access your account
+          {translate('enterCredentials')}
         </CardDescription>
       </CardHeader>
       
@@ -73,6 +78,7 @@ const LoginForm = () => {
               placeholder="admin@example.com or tenant@example.com"
               className="bg-secondary/50"
               required
+              autoComplete="email"
             />
           </div>
           
@@ -88,6 +94,7 @@ const LoginForm = () => {
               placeholder="password"
               className="bg-secondary/50"
               required
+              autoComplete="current-password"
             />
           </div>
         </CardContent>

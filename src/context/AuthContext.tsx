@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 type User = {
   id: string;
@@ -34,22 +35,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check for existing user session on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('partitionUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
+    // Fetch user session from backend API
+    const fetchUserSession = async () => {
+      try {
+        // In a real app, this would be a call to the backend
+        // e.g., const response = await fetch('/api/auth/session')
+        const storedUser = localStorage.getItem('partitionUser');
+        
+        if (storedUser) {
+          // Simulate verifying the token with the backend
+          await new Promise(resolve => setTimeout(resolve, 500));
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error('Failed to fetch user session:', error);
+        localStorage.removeItem('partitionUser');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserSession();
   }, []);
 
-  // Mock login function - would connect to backend in real implementation
+  // Login function that would connect to a backend API
   const login = async (email: string, password: string) => {
     setLoading(true);
     
     try {
-      // Mock API call - replace with real backend call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // This would be an actual API call in a real implementation
+      // const response = await fetch('/api/auth/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password }),
+      // });
       
-      // For demo purposes only - hard-coded users
+      // For demo purposes - simulating a backend response
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Simulating backend validation
       if (email === 'admin@example.com' && password === 'password') {
         const adminUser = {
           id: '1',
@@ -60,6 +84,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         setUser(adminUser);
         localStorage.setItem('partitionUser', JSON.stringify(adminUser));
+        
+        // In real app: store JWT token from backend
+        // localStorage.setItem('authToken', response.data.token);
       } else if (email === 'tenant@example.com' && password === 'password') {
         const tenantUser = {
           id: '2',
@@ -75,15 +102,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (error) {
       console.error('Login failed:', error);
+      toast({
+        title: "Authentication Error",
+        description: "Server could not validate your credentials",
+        variant: "destructive",
+      });
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('partitionUser');
+  const logout = async () => {
+    try {
+      // In real app: call backend logout endpoint
+      // await fetch('/api/auth/logout', { method: 'POST' });
+      
+      // Simulate backend call
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Clear local user data
+      setUser(null);
+      localStorage.removeItem('partitionUser');
+      // localStorage.removeItem('authToken');
+      
+      toast({
+        title: "Logged out",
+        description: "You have been logged out successfully",
+      });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const value = {

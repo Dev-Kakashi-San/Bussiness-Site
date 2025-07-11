@@ -58,53 +58,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchUserSession();
   }, []);
 
-  // Login function that would connect to a backend API
+  // Login function with backend API
   const login = async (email: string, password: string) => {
     setLoading(true);
     
     try {
-      // This would be an actual API call in a real implementation
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
       
-      // For demo purposes - simulating a backend response
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const data = await response.json();
       
-      // Simulating backend validation
-      if (email === 'admin@example.com' && password === 'password') {
-        const adminUser = {
-          id: '1',
-          name: 'Admin User',
-          email: 'admin@example.com',
-          role: 'admin' as const,
-          profileImage: '/placeholder.svg'
+      if (data.success) {
+        const user = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: data.user.role,
+          profileImage: data.user.profileImage || '/placeholder.svg'
         };
-        setUser(adminUser);
-        localStorage.setItem('partitionUser', JSON.stringify(adminUser));
         
-        // In real app: store JWT token from backend
-        // localStorage.setItem('authToken', response.data.token);
-      } else if (email === 'tenant@example.com' && password === 'password') {
-        const tenantUser = {
-          id: '2',
-          name: 'Tenant User',
-          email: 'tenant@example.com',
-          role: 'tenant' as const,
-          profileImage: '/placeholder.svg'
-        };
-        setUser(tenantUser);
-        localStorage.setItem('partitionUser', JSON.stringify(tenantUser));
+        setUser(user);
+        localStorage.setItem('partitionUser', JSON.stringify(user));
+        localStorage.setItem('authToken', data.token);
       } else {
-        throw new Error('Invalid credentials');
+        throw new Error(data.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login failed:', error);
       toast({
         title: "Authentication Error",
-        description: "Server could not validate your credentials",
+        description: error instanceof Error ? error.message : "Server could not validate your credentials",
         variant: "destructive",
       });
       throw error;

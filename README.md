@@ -1,69 +1,189 @@
-# Welcome to your Lovable project
+# Rama Kuti - Rajasthan Property Rental Platform
 
-## Project info
+A modern property rental platform built with React, TypeScript, and Tailwind CSS, designed specifically for Indian users with a beautiful Rajasthan cultural theme.
 
-**URL**: https://lovable.dev/projects/af2ce52d-eee8-4787-bb15-714f79506493
+## 🏛️ Features
 
-## How can I edit this code?
+- **Multi-language Support**: Hindi and English
+- **Responsive Design**: Mobile-first approach with beautiful UI
+- **User Authentication**: JWT-based login system
+- **Property Management**: Browse and search rental properties
+- **Admin Dashboard**: Complete admin panel for property management
+- **Rajasthan Theme**: Culturally rich design with Indian aesthetics
+- **Indian Currency**: All pricing in Indian Rupees (₹)
 
-There are several ways of editing your application.
+## 🚀 AWS Serverless Deployment
 
-**Use Lovable**
+This application is designed to work with AWS serverless architecture:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/af2ce52d-eee8-4787-bb15-714f79506493) and start prompting.
+### Frontend (S3 + CloudFront)
+- Static site hosted on S3 bucket
+- CloudFront for global CDN distribution
+- Domain can be configured with Route 53
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend (API Gateway + Lambda)
+- AWS API Gateway for REST API endpoints
+- Lambda functions for business logic
+- DynamoDB or MongoDB Atlas for database
+- Cognito for user authentication (optional)
 
-**Use your preferred IDE**
+## 📁 Project Structure
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Shadcn UI components
+│   ├── auth/           # Authentication components
+│   ├── admin/          # Admin panel components
+│   └── tenant/         # Tenant dashboard components
+├── pages/              # Page components
+├── context/            # React contexts (Auth, Language)
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+└── config/             # Configuration files
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Setup Instructions
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Node.js 18+ and npm
+- AWS Account
+- AWS CLI configured
 
-**Use GitHub Codespaces**
+### Local Development
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Update API Gateway endpoint in `src/config/api.ts`:
+   ```typescript
+   BASE_URL: 'https://your-api-gateway-id.execute-api.region.amazonaws.com/prod'
+   ```
+4. Start development server:
+   ```bash
+   npm run dev
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### AWS Deployment
 
-## What technologies are used for this project?
+#### 1. Build the application:
+```bash
+npm run build
+```
 
-This project is built with .
+#### 2. Deploy to S3:
+```bash
+# Create S3 bucket (replace with your bucket name)
+aws s3 mb s3://your-rama-kuti-bucket
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Enable static website hosting
+aws s3 website s3://your-rama-kuti-bucket --index-document index.html --error-document index.html
 
-## How can I deploy this project?
+# Upload build files
+aws s3 sync dist/ s3://your-rama-kuti-bucket --delete
 
-Simply open [Lovable](https://lovable.dev/projects/af2ce52d-eee8-4787-bb15-714f79506493) and click on Share -> Publish.
+# Set bucket policy for public read access
+aws s3api put-bucket-policy --bucket your-rama-kuti-bucket --policy '{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::your-rama-kuti-bucket/*"
+    }
+  ]
+}'
+```
 
-## I want to use a custom domain - is that possible?
+#### 3. Setup CloudFront (Optional but recommended):
+```bash
+# Create CloudFront distribution pointing to your S3 bucket
+aws cloudfront create-distribution --distribution-config file://cloudfront-config.json
+```
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## 🔧 Configuration
+
+### API Gateway Setup
+1. Create API Gateway REST API
+2. Setup Lambda functions for backend logic
+3. Configure CORS for your S3 bucket domain
+4. Update the API endpoint in `src/config/api.ts`
+
+### Environment Variables
+Update the following in your code:
+- API Gateway URL in `src/config/api.ts`
+- Any other AWS service endpoints
+
+## 🎨 Design System
+
+The application uses a custom design system with:
+- **Colors**: Rajasthan-inspired color palette
+- **Typography**: Indian-friendly fonts
+- **Components**: Accessible, responsive UI components
+- **Themes**: Light/dark mode support
+
+## 📱 Mobile Support
+
+- Fully responsive design
+- Mobile-first approach
+- Touch-friendly interfaces
+- Optimized for Indian mobile users
+
+## 🔐 Authentication
+
+- JWT-based authentication
+- Secure token storage
+- Role-based access (Admin/Tenant)
+- Session management
+
+## 💰 Payment Integration (Future)
+
+Ready for integration with Indian payment gateways:
+- Razorpay
+- PayU
+- CCAvenue
+- UPI integration
+
+## 🌍 Internationalization
+
+- Hindi and English support
+- Easy to add more Indian languages
+- RTL support ready
+
+## 📊 Admin Features
+
+- User management
+- Property CRUD operations
+- Rental tracking
+- Payment management
+- Analytics dashboard
+
+## 🏠 User Features
+
+- Property search and filtering
+- Rental applications
+- Payment tracking
+- Profile management
+- Favorites and wishlist
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and queries, please create an issue in the GitHub repository.
+
+---
+
+**Built with ❤️ for the Indian rental market**

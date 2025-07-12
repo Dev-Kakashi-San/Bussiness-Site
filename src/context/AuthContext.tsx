@@ -35,17 +35,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check for existing user session on mount
   useEffect(() => {
-    // Fetch user session from backend API
+    // Fetch user session from AWS API Gateway
     const fetchUserSession = async () => {
       try {
-        // In a real app, this would be a call to the backend
-        // e.g., const response = await fetch('/api/auth/session')
+        // Check localStorage first, then validate with AWS if token exists
         const storedUser = localStorage.getItem('partitionUser');
+        const authToken = localStorage.getItem('authToken');
         
-        if (storedUser) {
-          // Simulate verifying the token with the backend
-          await new Promise(resolve => setTimeout(resolve, 500));
-          setUser(JSON.parse(storedUser));
+        if (storedUser && authToken) {
+          // Verify token with AWS API Gateway
+          try {
+            const response = await fetch('https://your-api-gateway-id.execute-api.region.amazonaws.com/prod/auth/verify', {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+              },
+            });
+            
+            if (response.ok) {
+              setUser(JSON.parse(storedUser));
+            } else {
+              // Token invalid, clear storage
+              localStorage.removeItem('partitionUser');
+              localStorage.removeItem('authToken');
+            }
+          } catch (error) {
+            // If verification fails, still use stored user for offline capability
+            setUser(JSON.parse(storedUser));
+          }
         }
       } catch (error) {
         console.error('Failed to fetch user session:', error);
@@ -58,12 +76,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchUserSession();
   }, []);
 
-  // Login function with backend API
+  // Login function with AWS API Gateway
   const login = async (email: string, password: string) => {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      // Replace with your AWS API Gateway endpoint
+      const response = await fetch('https://your-api-gateway-id.execute-api.region.amazonaws.com/prod/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -101,16 +120,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      // In real app: call backend logout endpoint
-      // await fetch('/api/auth/logout', { method: 'POST' });
-      
-      // Simulate backend call
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Call AWS API Gateway logout endpoint
+      const authToken = localStorage.getItem('authToken');
+      if (authToken) {
+        await fetch('https://your-api-gateway-id.execute-api.region.amazonaws.com/prod/auth/logout', {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${authToken}`
+          },
+        });
+      }
       
       // Clear local user data
       setUser(null);
       localStorage.removeItem('partitionUser');
-      // localStorage.removeItem('authToken');
+      localStorage.removeItem('authToken');
       
       toast({
         title: "Logged out",

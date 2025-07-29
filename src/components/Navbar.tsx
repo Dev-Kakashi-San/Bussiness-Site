@@ -1,16 +1,51 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogOut, Menu, Globe, X } from 'lucide-react';
-import { useState } from 'react';
+import { LogOut, Menu, Globe, X, User, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+type UserData = {
+  userName: string;
+  id: number;
+  role: string;
+};
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { language, setLanguage, translate } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userLoading, setUserLoading] = useState(false);
+
+  // Fetch user data from the API
+  const fetchUserData = async (userId: number) => {
+    setUserLoading(true);
+    try {
+      const response = await fetch(`http://localhost:3000/users/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserData(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+    } finally {
+      setUserLoading(false);
+    }
+  };
+
+  // Fetch user data on component mount (using id 0 as default)
+  useEffect(() => {
+    fetchUserData(0);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -67,6 +102,32 @@ const Navbar = () => {
               >
                 {translate('login')}
               </Button>
+            )}
+
+            {/* User Section */}
+            {userData && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2 px-3">
+                    <User className="h-4 w-4 text-gray-300" />
+                    <span className="text-gray-300">{userData.userName}</span>
+                    <ChevronDown className="h-4 w-4 text-gray-300" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem className="flex flex-col items-start">
+                    <div className="font-medium">{userData.userName}</div>
+                    <div className="text-sm text-muted-foreground">ID: {userData.id}</div>
+                    <div className="text-sm text-muted-foreground">{userData.role}</div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => fetchUserData(0)}>
+                    Switch to User 0
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => fetchUserData(1)}>
+                    Switch to User 1
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             
             <Button
